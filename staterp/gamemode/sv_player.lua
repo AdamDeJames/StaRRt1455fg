@@ -77,3 +77,9 @@ function Player:SetRPName(name)
 	local q = "UPDATE player SET rpname = '"..self:GetNWString('rpname').."' WHERE steamid = '"..id.."'"
 end
 
+function Player:Taxes()
+	return self:GetNWInt('taxes')
+end
+
+
+

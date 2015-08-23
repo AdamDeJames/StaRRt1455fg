@@ -31,16 +31,17 @@ function GM:PlayerInitialSpawn( ply )
 		end
 	end
 	ply:LoadProfile()
+	ply:SetTeam(staterp_config.DefaultTeam)
 end
-
+--[[Timers]]--
 timer.Create('SavePlayerData', 15, 0, function()
 	if(staterp_config.debug == true) then
-		MsgC(red, "[STATE RP - DEBUG] ", white, " Data saved to database.")
 		for k, v in pairs(player.GetAll()) do
 			if !IsValid(v) then
 				return false
 			else
 				v:SaveProfile()
+				MsgC(red, "[STATE RP - DEBUG] ", white, " Data saved to database.")
 			end
 		end
 	else
@@ -54,7 +55,17 @@ timer.Create('SavePlayerData', 15, 0, function()
 	end
 end)
 
-
+timer.Create('payday', 300, 0, function()
+	for k, v in pairs(player.GetAll()) do
+		if !IsValid(v) then
+			return false
+		else
+			v:AddMoney(v:Salary())
+			v:RemoveMoney(v:Taxes())
+			v:Notify(v:Salary()..'  added to account from Pay Check. '..v:Taxes()..' removed for taxes!')
+		end
+	end
+end)
 --[[Console Commands]]--
 function ChangeTeam(ply, args, cmd)
 	if !args then
