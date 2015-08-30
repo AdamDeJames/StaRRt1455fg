@@ -1,7 +1,7 @@
-"staterp"
+"revrp"
 {
 	"base"		"sandbox"
-	"title"		"StateRP"
+	"title"		"1700s RP"
 	"maps"		"^gm_"
 	"menusystem"	"1"
 	"workshopid"	""

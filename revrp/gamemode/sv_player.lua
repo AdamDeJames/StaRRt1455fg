@@ -13,17 +13,56 @@ function Player:LoadProfile()
 			self:SetNWInt('money', str[1].money)
 			self:SetNWInt('playtime', str[1].playtime)
 			self:SetNWString('name', str[1].name)
+			self:SetNWString('rank', str[1].rank)
 		end
 
 	end
 	GetDataQuery(q2, SetData)
 end
 
-function Player:SetRank(int)
-	self:SetNWInt('rank', int)
+function Player:SetRank(rank)
+	if !rank == "owner" or "sadmin" or "admin" or "moderator" or "user" then
+		MsgC(red, "Invalid Rank, "..rank)
+		return false
+	end
+	self:SetNWString('rank', rank)
+	self:SaveRank(rank)
 end
+
 function Player:GetRank()
-	return self:GetNWInt('rank') end
+	local id = self:SteamID()
+	local q2 = "SELECT * FROM amod WHERE steamid = '"..id.."'"
+	function SetData(str)
+		if str == nil then
+			self:SetRank('user')
+		else
+			self:SetNWString('rank', str[1].rank)
+		end
+	end
+	GetDataQuery(q2, SetData)
+end
+
+function Player:SaveRank(rank)
+	local id = self:SteamID()
+	local q2 = "INSERT INTO amod ( steamid, name, rank ) VALUES ('"..id.."', '"..self:Nick().."', '"..rank.."')"
+	Query(q2)
+end
+
+function Player:IsStaff()
+	if self:GetNWString('rank')== "owner" or "sadmin" or "admin" or "moderator" then
+		return true
+	else
+		return false
+	end
+end
+
+function Player:IsSuperStaff()
+	if self:GetNWString('rank')== "owner" or "sadmin" then
+		return true
+	else
+		return false
+	end
+end
 
 function Player:BanForReal(duration, reason)
 	self:Ban(duration)
